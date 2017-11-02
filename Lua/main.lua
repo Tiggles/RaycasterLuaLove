@@ -42,8 +42,8 @@ end
 
 function love.update(dt)
     fps = love.timer.getFPS()
-    moveSpeed = dt * 5;
-    rotSpeed = dt * 3;
+    moveSpeed = dt * 5
+    rotSpeed = dt * 3 
     
     up = love.keyboard.isDown("w")
     left = love.keyboard.isDown("a")
