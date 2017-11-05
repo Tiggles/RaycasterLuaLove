@@ -5,7 +5,7 @@
 #include <unistd.h> // usleep
 
 
-int worldMap[24][24];/* =
+int worldMap[24][24] =
 {
   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -31,7 +31,7 @@ int worldMap[24][24];/* =
   {1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
   {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-};*/
+};
 
 #define SCREEN_HEIGHT 1080 
 #define SCREEN_WIDTH 1920
@@ -214,7 +214,7 @@ int main() {
       } else if (3 == mapValue) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 255, SDL_ALPHA_OPAQUE);
       } else {
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+        SDL_SetRenderDrawColor(renderer, std::max(mapValue * 2,1) % 33, mapValue * 5, 100, SDL_ALPHA_OPAQUE);
       }
       SDL_RenderDrawLine(renderer, x, drawEnd, x, drawStart);
       max = std::max(max, x);
