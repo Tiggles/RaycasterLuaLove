@@ -33,8 +33,6 @@ function love.load()
     dirY = 0.0;
     planeX = 0.0;
     planeY = 0.66;
-    time = 0.0;
-    oldTime = 0.0;
     height = 540
     width = 960
     love.window.setMode(width, height)
@@ -42,8 +40,8 @@ end
 
 function love.update(dt)
     fps = love.timer.getFPS()
-    moveSpeed = dt * 5
-    rotSpeed = dt * 3 
+    moveSpeed = dt * 5;
+    rotSpeed = dt * 3;
     
     up = love.keyboard.isDown("w")
     left = love.keyboard.isDown("a")
@@ -85,6 +83,10 @@ function love.update(dt)
 end
 
 function love.draw()
+    love.graphics.setColor(102, 123, 123)
+    love.graphics.rectangle( "fill", 0, 0, width, height / 2 )
+    love.graphics.setColor(156, 123, 255)
+    love.graphics.rectangle( "fill", 0, height / 2, width, height / 2)
     for x = 0, width do
         cameraX = 2 * x / width - 1;
         rayPosX = posX;
@@ -102,7 +104,7 @@ function love.draw()
 
         if rayDirX < 0 then
             stepX = -1;
-            sideDistX = (rayPosX - mapX) * deltaDistX;
+            sideDistX = (rayPosX - mapX) * deltaDistX
         else
             stepX = 1;
             sideDistX = (mapX + 1.0 - rayPosX) * deltaDistX
