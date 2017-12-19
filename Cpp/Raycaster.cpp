@@ -1,4 +1,4 @@
-#include <SDL.h>
+#include "SDL2/SDL.h"
 #include <cmath>
 #include <ctime>
 #include <iostream>
@@ -19,13 +19,13 @@ struct Player
     bool down = false;
     bool left = false;
     bool right = false;
-    double moveSpeed = 0.5;
-    double rotSpeed = 0.05;
+    double moveSpeed = 0.1;
+    double rotSpeed = 0.02;
 };
 
 void Render(SDL_Renderer *renderer, Player *player, SDL_Rect *topRect, SDL_Rect *bottomRect);
-bool HandleInput(Player *player, bool running);
-void Turn(Player *player, bool turnRight);
+bool HandleInput(Player *player, bool running, unsigned int deltaTime);
+void Turn(Player *player, bool turnRight, unsigned int deltaTime);
 
 int worldMap[24][24] =
 {
@@ -88,9 +88,14 @@ int main(int argc, char *argv[]) {
     topRect->h = bottomRect->h = SCREEN_HEIGHT / 2;
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 
+    unsigned int last = SDL_GetTicks(), now, deltaTime;
     // Main Loop
     while (running) {
-        running = HandleInput(player, running);
+        now = SDL_GetTicks();
+        deltaTime = now - last;
+        last = now;
+
+        running = HandleInput(player, running, deltaTime);
         Render(renderer, player, topRect, bottomRect);
     }
 
@@ -99,9 +104,9 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-void Turn(Player * player, double &oldDirX, double &oldPlaneX);
+//void Turn(Player * player, double &oldDirX, double &oldPlaneX);
 
-bool HandleInput(Player *player, bool running)
+bool HandleInput(Player *player, bool running, unsigned int deltaTime)
 {
     SDL_Event event;
     player->up = player->down = player->left = player->right = false;
@@ -135,30 +140,30 @@ bool HandleInput(Player *player, bool running)
 
     if (player->up) {
         if (worldMap[int(player->position->x + player->direction->x * player->moveSpeed)][int(player->position->y)] == 0)
-            player->position->x = player->position->x + player->direction->x * player->moveSpeed;
+            player->position->x = player->position->x + player->direction->x * player->moveSpeed * deltaTime;
         if (worldMap[int(player->position->x)][int(player->position->y + player->direction->y * player->moveSpeed)] == 0)
-            player->position->y = player->position->y + player->direction->y * player->moveSpeed;
+            player->position->y = player->position->y + player->direction->y * player->moveSpeed * deltaTime;
     }
 
     if (player->down) {
         if (worldMap[int(player->position->x - player->direction->x * player->moveSpeed)][int(player->position->y)] == 0)
-            player->position->x = player->position->x - player->direction->x * player->moveSpeed;
+            player->position->x = player->position->x - player->direction->x * player->moveSpeed * deltaTime;
         if (worldMap[int(player->position->x)][int(player->position->y - player->direction->y * player->moveSpeed)] == 0)
-            player->position->y = player->position->y - player->direction->y * player->moveSpeed;
+            player->position->y = player->position->y - player->direction->y * player->moveSpeed * deltaTime;
     }
 
     if (player->right) {
-        Turn(player, true);
+        Turn(player, true, deltaTime);
     }
     if (player->left)
-        Turn(player, false);
+        Turn(player, false, deltaTime);
     return running;
 }
 
-void Turn(Player *player, bool turnRight)
+void Turn(Player *player, bool turnRight, unsigned int deltaTime)
 {
     double rotation = 0;
-    rotation = turnRight ? -player->rotSpeed : player->rotSpeed;
+    rotation = turnRight ? -player->rotSpeed  * deltaTime : player->rotSpeed  * deltaTime;
     double oldDirX, oldPlaneX;
     oldDirX = player->direction->x;
     player->direction->x = player->direction->x * cos(rotation) - player->direction->y * sin(rotation);

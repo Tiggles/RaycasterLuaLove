@@ -198,18 +198,19 @@ function draw() {
 		drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
 		if (drawEnd >= SCREEN_HEIGHT) { drawEnd = SCREEN_HEIGHT - 1; }
 		var mapValue = worldMap[mapX][mapY];
-        if (side == 1) { mapValue = Math.floor(mapValue / 2) }
-        if (mapValue == 0) {
-            ctx.strokeStyle="#FF0000";
-        } else if (mapValue == 1) {
-            ctx.strokeStyle="#FFFF00";
-        } else if (mapValue == 2) {
-            ctx.strokeStyle="#FF00FF";
-        } else if (mapValue == 3) {
-            ctx.strokeStyle="#00FFFF";
-        } else {
-            ctx.strokeStyle="#FFFFFF";
-        }
+    // TODO FIXME NOTE I think the error is here:
+    if (side == 1) { mapValue = Math.floor(mapValue / 2) }
+    if (mapValue == 0) {
+        ctx.strokeStyle="#FF0000";
+    } else if (mapValue == 1) {
+        ctx.strokeStyle="#FFFF00";
+    } else if (mapValue == 2) {
+        ctx.strokeStyle="#FF00FF";
+    } else if (mapValue == 3) {
+        ctx.strokeStyle="#00FFFF";
+    } else {
+        ctx.strokeStyle="#FFFFFF";
+    }
 		ctx.moveTo(x, drawStart);
 		ctx.lineTo(x, drawEnd);
 		ctx.stroke(); 
@@ -221,7 +222,7 @@ var i = 0;
 function main() {
 	draw()
 	update()
-  requestAniFrame
+  setTimeout(main, 200);
 }
 
 main()
