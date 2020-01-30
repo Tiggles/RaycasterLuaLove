@@ -1,5 +1,5 @@
 extern crate sdl2;
-use std::time::{SystemTime, UNIX_EPOCH};
+use sdl2::keyboard::Keycode;
 
 struct Vector2D {
     x: f64,
@@ -22,7 +22,8 @@ const SCREEN_HEIGHT: u16 = 600;
 const SCREEN_WIDTH: u16 = 800;
 
 fn main() {
-
+    let sdl_context = sdl2::init().unwrap();
+    let video_subsystem = sdl_context.video().unwrap();
     let worldMap: Vec<Vec<u8>> = vec![
         vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         vec![1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -77,19 +78,26 @@ fn main() {
         rotSpeed: 0.04f64,
     };
 
-    let last = SystemTime::now();
-    let mut running = true;
 
+    let mut running = true;
     while running {
-        let now = SystemTime::now();
-        let delta_time = now.duration_since(last).expect("Negative delta_time");
-        let last = now;
-        running = !handle_input(&player, delta_time.as_millis()); 
+        let delta_time = 0;
+        let last = 0;
+        running = !handle_input(&player, &sdl_context, 0); 
     }
 
     println!("Exiting");
 }
 
-fn handle_input(player: &Player, delta_time: u128) -> bool {
+fn handle_input(player: &Player, sdl_context: &sdl2::Sdl, delta_time: u128) -> bool {
+    let mut event_pump = sdl_context.event_pump().unwrap();
+    for event in event_pump.poll_iter() {
+        match event {
+            sdl2::event::Event::KeyDown { keycode: Some(key), .. } => {
+                println!("{}", key)
+            },
+            _ => {}
+        }
+    }
     false
 }

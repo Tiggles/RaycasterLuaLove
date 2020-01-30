@@ -125,8 +125,7 @@ bool HandleInput(Player *player, unsigned int deltaTime)
             player->right = true;
             break;
         case SDLK_ESCAPE:
-            running = false;
-            break;
+            return false;
         case SDLK_PLUS:
             player->plane->y += 0.1f;
             break;
@@ -158,7 +157,7 @@ bool HandleInput(Player *player, unsigned int deltaTime)
 	    if (player->left)
 		    Turn(player, false);
 	}
-    return running;
+    return true;
 }
 
 void Turn(Player *player, bool turnRight)
