@@ -83,9 +83,9 @@ function love.update(dt)
 end
 
 function love.draw()
-    love.graphics.setColor(102, 123, 123)
+    love.graphics.setColor(102 /255, 123 /255, 123/255)
     love.graphics.rectangle( "fill", 0, 0, width, height / 2 )
-    love.graphics.setColor(156, 123, 255)
+    love.graphics.setColor(156/255, 123/255, 255/255)
     love.graphics.rectangle( "fill", 0, height / 2, width, height / 2)
     for x = 0, width do
         cameraX = 2 * x / width - 1;
@@ -141,15 +141,15 @@ function love.draw()
         local mapValue = worldMap[mapX + 1][mapY + 1];
         if side == 1 then mapValue = math.floor(mapValue / 2) end
         if mapValue == 0 then
-            love.graphics.setColor( 255, 255, 0 )
+            love.graphics.setColor( 255/255, 255/255, 0 )
         elseif mapValue == 1 then
-            love.graphics.setColor( 255, 0, 0)
+            love.graphics.setColor( 255/255, 0, 0)
         elseif mapValue == 2 then
-            love.graphics.setColor( 0, 255, 0)
+            love.graphics.setColor( 0, 255/255, 0)
         elseif mapValue == 3 then
-            love.graphics.setColor( 0, 0, 255)
+            love.graphics.setColor( 0, 0, 255/255)
         else
-            love.graphics.setColor(255, 255, 255)
+            love.graphics.setColor(255/255, 255/255, 255/255)
         end                
         love.graphics.line(x, drawStart, x, drawEnd)
     end
