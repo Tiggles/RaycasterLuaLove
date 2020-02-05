@@ -14,8 +14,8 @@ struct Player {
     down: bool,
     left: bool,
     right: bool,
-    moveSpeed: f64,
-    rotSpeed: f64,
+    move_speed: f64,
+    rot_speed: f64,
 }
 
 const SCREEN_HEIGHT: u16 = 600;
@@ -24,7 +24,7 @@ const SCREEN_WIDTH: u16 = 800;
 fn main() {
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
-    let worldMap: Vec<Vec<u8>> = vec![
+    let world_map: Vec<Vec<u8>> = vec![
         vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         vec![1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         vec![1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -74,8 +74,8 @@ fn main() {
         down: false,
         left: false,
         right: false,
-        moveSpeed: 0.02f64,
-        rotSpeed: 0.04f64,
+        move_speed: 0.02f64,
+        rot_speed: 0.04f64,
     };
 
 
