@@ -15,8 +15,8 @@ struct Player {
     down: bool,
     left: bool,
     right: bool,
-    moveSpeed: f64,
-    rotSpeed: f64,
+    move_speed: f64,
+    rot_speed: f64,
 }
 
 const SCREEN_HEIGHT: u16 = 600;
@@ -123,8 +123,8 @@ fn main() {
         down: false,
         left: false,
         right: false,
-        moveSpeed: 0.02f64,
-        rotSpeed: 0.04f64,
+        move_speed: 0.02f64,
+        rot_speed: 0.04f64,
     };
 
     let mut running = true;
