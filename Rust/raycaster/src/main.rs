@@ -321,10 +321,6 @@ fn handle_input(
     }
     for _i in 0..delta_time {
         if player.up {
-            println!(
-                "{}",
-                (player.position.x + player.direction.x * player.move_speed)
-            );
             if world_map[(player.position.x + player.direction.x * player.move_speed) as usize]
                 [(player.position.y) as usize]
                 == 0
