@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
     player->plane->y = 0.66f;
     SDL_Window *window;
     SDL_Renderer *renderer;
-    SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
+    SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI, &window, &renderer);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
 
@@ -93,7 +93,6 @@ int main(int argc, char *argv[])
         now = SDL_GetTicks();
         deltaTime = now - last;
         last = now;
-
         running = HandleInput(player, deltaTime);
         Render(renderer, player, topRect, bottomRect);
     }
@@ -106,58 +105,50 @@ int main(int argc, char *argv[])
 bool HandleInput(Player *player, unsigned int deltaTime)
 {
     SDL_Event event;
-    bool running = true;
-    player->up = player->down = player->left = player->right = false;
     while (SDL_PollEvent(&event))
     {
         switch (event.key.keysym.sym)
         {
         case SDLK_UP:
-            player->up = true;
+            player->up = SDL_KEYDOWN == event.type;
             break;
         case SDLK_DOWN:
-            player->down = true;
+            player->down = SDL_KEYDOWN == event.type;
             break;
         case SDLK_LEFT:
-            player->left = true;
+            player->left = SDL_KEYDOWN == event.type;
             break;
         case SDLK_RIGHT:
-            player->right = true;
+            player->right = SDL_KEYDOWN == event.type;
             break;
         case SDLK_ESCAPE:
-            return false;
-        case SDLK_PLUS:
-            player->plane->y += 0.1f;
-            break;
-        case SDLK_MINUS:
-            player->plane->y -= 0.1f;
-            break;
-        default:
+            if (SDL_KEYDOWN == event.type)
+                return false;
             break;
         }
     }
+
     for (int i = 0; i < deltaTime; i--)
     {
         if (player->up)
         {
             if (worldMap[int(player->position->x + player->direction->x * player->moveSpeed)][int(player->position->y)] == 0)
-                player->position->x = player->position->x + player->direction->x * player->moveSpeed * deltaTime;
+                player->position->x = player->position->x + player->direction->x * player->moveSpeed;
             if (worldMap[int(player->position->x)][int(player->position->y + player->direction->y * player->moveSpeed)] == 0)
-                player->position->y = player->position->y + player->direction->y * player->moveSpeed * deltaTime;
+                player->position->y = player->position->y + player->direction->y * player->moveSpeed;
         }
 
         if (player->down)
         {
             if (worldMap[int(player->position->x - player->direction->x * player->moveSpeed)][int(player->position->y)] == 0)
-                player->position->x = player->position->x - player->direction->x * player->moveSpeed * deltaTime;
+                player->position->x = player->position->x - player->direction->x * player->moveSpeed;
             if (worldMap[int(player->position->x)][int(player->position->y - player->direction->y * player->moveSpeed)] == 0)
-                player->position->y = player->position->y - player->direction->y * player->moveSpeed * deltaTime;
+                player->position->y = player->position->y - player->direction->y * player->moveSpeed;
         }
 
         if (player->right)
-        {
             Turn(player, true);
-        }
+
         if (player->left)
             Turn(player, false);
     }
