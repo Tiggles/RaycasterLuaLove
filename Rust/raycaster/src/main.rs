@@ -150,12 +150,12 @@ fn main() {
     loop {
         let ticks = timer.ticks();
         let delta_time = ticks - last;
+        last = ticks;
         player = match handle_input(player, &sdl_context, &world_map, delta_time) {
             Ok(p) => p,
             Err(_) => break,
         };
         canvas = render(canvas, &player, &world_map);
-        last = ticks;
     }
 
     println!("Exiting");
@@ -178,7 +178,7 @@ fn render(mut canvas: WindowCanvas, player: &Player, world_map: &Vec<Vec<u8>>) -
         ))
         .expect("And error ocurred for bottom rect");
     for x in 0..SCREEN_WIDTH {
-        let camera_x = 2.0f64 * (x as f64) / (SCREEN_WIDTH - 1) as f64;
+        let camera_x = 2f64 * x as f64 / SCREEN_WIDTH as f64 - 1f64;
         let ray_pos_x = player.position.x;
         let ray_pos_y = player.position.y;
         let ray_direction = Vector2D {

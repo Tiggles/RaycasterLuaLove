@@ -19,8 +19,8 @@ struct Player
     bool down = false;
     bool left = false;
     bool right = false;
-    double moveSpeed = 0.02;
-    double rotSpeed = 0.04;
+    double moveSpeed = 0.008;
+    double rotSpeed = 0.005;
 };
 
 void Render(SDL_Renderer *renderer, Player *player, SDL_Rect *topRect, SDL_Rect *bottomRect);
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
         deltaTime = now - last;
         last = now;
 
-        running = HandleInput(player, deltaTime * 2);
+        running = HandleInput(player, deltaTime);
         Render(renderer, player, topRect, bottomRect);
     }
 
