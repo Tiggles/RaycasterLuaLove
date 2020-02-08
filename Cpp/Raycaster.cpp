@@ -28,39 +28,37 @@ bool HandleInput(Player *player, unsigned int deltaTime);
 void Turn(Player *player, bool turnRight);
 
 int worldMap[24][24] =
-{
-    { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
-    { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-    { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-    { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-    { 1,0,0,0,0,0,2,2,0,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1 },
-    { 1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-    { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,3,0,0,0,1 },
-    { 1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-    { 1,0,0,0,0,0,2,2,0,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1 },
-    { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-    { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-    { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-    { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-    { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-    { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-    { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-    { 1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-    { 1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-    { 1,4,0,0,0,0,5,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-    { 1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-    { 1,4,0,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-    { 1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-    { 1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-    { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 }
-};
+    {
+        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 2, 2, 0, 2, 2, 0, 0, 0, 0, 3, 0, 3, 0, 3, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 2, 2, 0, 2, 2, 0, 0, 0, 0, 3, 0, 3, 0, 3, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 4, 0, 4, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 4, 0, 0, 0, 0, 5, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 4, 0, 4, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 4, 0, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 
-#define SCREEN_HEIGHT 600 
+#define SCREEN_HEIGHT 600
 #define SCREEN_WIDTH 800
 
-
-
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     // Init
     bool running = true;
     Player *player = new Player;
@@ -90,11 +88,12 @@ int main(int argc, char *argv[]) {
 
     unsigned int last = SDL_GetTicks(), now, deltaTime;
     // Main Loop
-    while (running) {
+    while (running)
+    {
         now = SDL_GetTicks();
         deltaTime = now - last;
         last = now;
-	
+
         running = HandleInput(player, deltaTime * 2);
         Render(renderer, player, topRect, bottomRect);
     }
@@ -104,14 +103,15 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-
 bool HandleInput(Player *player, unsigned int deltaTime)
 {
     SDL_Event event;
     bool running = true;
     player->up = player->down = player->left = player->right = false;
-    while (SDL_PollEvent(&event)) {
-        switch (event.key.keysym.sym) {
+    while (SDL_PollEvent(&event))
+    {
+        switch (event.key.keysym.sym)
+        {
         case SDLK_UP:
             player->up = true;
             break;
@@ -136,34 +136,37 @@ bool HandleInput(Player *player, unsigned int deltaTime)
             break;
         }
     }
-    for (int i = 0; i < deltaTime; i--) {
-	    if (player->up) {
+    for (int i = 0; i < deltaTime; i--)
+    {
+        if (player->up)
+        {
             if (worldMap[int(player->position->x + player->direction->x * player->moveSpeed)][int(player->position->y)] == 0)
                 player->position->x = player->position->x + player->direction->x * player->moveSpeed * deltaTime;
             if (worldMap[int(player->position->x)][int(player->position->y + player->direction->y * player->moveSpeed)] == 0)
                 player->position->y = player->position->y + player->direction->y * player->moveSpeed * deltaTime;
         }
 
-	    if (player->down) {
+        if (player->down)
+        {
             if (worldMap[int(player->position->x - player->direction->x * player->moveSpeed)][int(player->position->y)] == 0)
                 player->position->x = player->position->x - player->direction->x * player->moveSpeed * deltaTime;
             if (worldMap[int(player->position->x)][int(player->position->y - player->direction->y * player->moveSpeed)] == 0)
                 player->position->y = player->position->y - player->direction->y * player->moveSpeed * deltaTime;
-	    }
+        }
 
-	    if (player->right) {
-		    Turn(player, true);
-	    }
-	    if (player->left)
-		    Turn(player, false);
-	}
+        if (player->right)
+        {
+            Turn(player, true);
+        }
+        if (player->left)
+            Turn(player, false);
+    }
     return true;
 }
 
 void Turn(Player *player, bool turnRight)
 {
-    double rotation = 0;
-    rotation = turnRight ? -player->rotSpeed : player->rotSpeed;
+    double rotation = turnRight ? -player->rotSpeed : player->rotSpeed;
     double oldDirX, oldPlaneX;
     oldDirX = player->direction->x;
     player->direction->x = player->direction->x * cos(rotation) - player->direction->y * sin(rotation);
@@ -173,14 +176,14 @@ void Turn(Player *player, bool turnRight)
     player->plane->y = oldPlaneX * sin(rotation) + player->plane->y * cos(rotation);
 }
 
-void Render(SDL_Renderer *renderer, Player *player, SDL_Rect *topRect, SDL_Rect *bottomRect) 
+void Render(SDL_Renderer *renderer, Player *player, SDL_Rect *topRect, SDL_Rect *bottomRect)
 {
     SDL_SetRenderDrawColor(renderer, 102, 123, 123, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, topRect);
     SDL_SetRenderDrawColor(renderer, 156, 123, 255, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, bottomRect);
     Vector2D *rayDirection = new Vector2D;
-    for (int x = 0; x < SCREEN_WIDTH; x++) 
+    for (int x = 0; x < SCREEN_WIDTH; x++)
     {
         double cameraX = 2 * double(x) / SCREEN_WIDTH - 1;
         double rayPosX = player->position->x, rayPosY = player->position->y;
@@ -197,19 +200,23 @@ void Render(SDL_Renderer *renderer, Player *player, SDL_Rect *topRect, SDL_Rect 
         int stepX, stepY;
         double sideDistX, sideDistY;
 
-        if (rayDirection->x < 0) {
+        if (rayDirection->x < 0)
+        {
             stepX = -1;
             sideDistX = (rayPosX - mapX) * deltaDistX;
         }
-        else {
+        else
+        {
             stepX = 1;
             sideDistX = (mapX + 1.0f - rayPosX) * deltaDistX;
         }
-        if (rayDirection->y < 0) {
+        if (rayDirection->y < 0)
+        {
             stepY = -1;
             sideDistY = (rayPosY - mapY) * deltaDistY;
         }
-        else {
+        else
+        {
             stepY = 1;
             sideDistY = (mapY + 1.0f - rayPosY) * deltaDistY;
         }
@@ -217,13 +224,16 @@ void Render(SDL_Renderer *renderer, Player *player, SDL_Rect *topRect, SDL_Rect 
         int side;
         double perpWallDist;
 
-        while (hit == false) {
-            if (sideDistX < sideDistY) {
+        while (hit == false)
+        {
+            if (sideDistX < sideDistY)
+            {
                 sideDistX = sideDistX + deltaDistX;
                 mapX = mapX + stepX;
                 side = 0;
             }
-            else {
+            else
+            {
                 sideDistY = sideDistY + deltaDistY;
                 mapY = mapY + stepY;
                 side = 1;
@@ -232,43 +242,53 @@ void Render(SDL_Renderer *renderer, Player *player, SDL_Rect *topRect, SDL_Rect 
                 hit = true;
         }
 
-        if (side == 0) {
+        if (side == 0)
+        {
             perpWallDist = (mapX - rayPosX + (1 - stepX) / 2) / rayDirection->x;
         }
-        else {
+        else
+        {
             perpWallDist = (mapY - rayPosY + (1 - stepY) / 2) / rayDirection->y;
         }
 
         int lineHeight = int(SCREEN_HEIGHT / perpWallDist);
 
         int drawStart = -lineHeight / 2 + SCREEN_HEIGHT / 2;
-        if (drawStart < 0) {
+        if (drawStart < 0)
+        {
             drawStart = 0;
         }
         int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
-        if (drawEnd >= SCREEN_HEIGHT) {
+        if (drawEnd >= SCREEN_HEIGHT)
+        {
             drawEnd = SCREEN_HEIGHT - 1;
         }
 
         int mapValue = worldMap[int(mapX)][int(mapY)];
 
-        if (side == 1) {
+        if (side == 1)
+        {
             mapValue = int(mapValue / 2);
         }
 
-        if (0 == mapValue) {
+        if (0 == mapValue)
+        {
             SDL_SetRenderDrawColor(renderer, 255, 255, 0, SDL_ALPHA_OPAQUE);
         }
-        else if (1 == mapValue) {
+        else if (1 == mapValue)
+        {
             SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
         }
-        else if (2 == mapValue) {
+        else if (2 == mapValue)
+        {
             SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
         }
-        else if (3 == mapValue) {
+        else if (3 == mapValue)
+        {
             SDL_SetRenderDrawColor(renderer, 0, 0, 255, SDL_ALPHA_OPAQUE);
         }
-        else {
+        else
+        {
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
         }
         SDL_RenderDrawLine(renderer, x, drawEnd, x, drawStart);

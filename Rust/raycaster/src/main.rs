@@ -3,9 +3,7 @@ extern crate sdl2;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
-use sdl2::render::{Canvas, WindowCanvas};
-use sdl2::video::Window;
-use std::time::Duration;
+use sdl2::render::WindowCanvas;
 
 struct Vector2D {
     x: f64,
@@ -40,6 +38,8 @@ fn main() {
         .unwrap();
 
     let mut canvas = window.into_canvas().build().unwrap();
+
+    let mut timer = sdl_context.timer().expect("Init of timer failed");
 
     canvas.set_draw_color(Color::RGB(0, 255, 255));
     canvas.clear();
@@ -143,18 +143,19 @@ fn main() {
         down: false,
         left: false,
         right: false,
-        move_speed: 0.02f64,
-        rot_speed: 0.04f64,
+        move_speed: 0.008f64,
+        rot_speed: 0.005f64,
     };
-
+    let mut last = 0;
     loop {
-        let delta_time = 0;
-        let last = 0;
-        player = match handle_input(player, &sdl_context, &world_map, 1) {
+        let ticks = timer.ticks();
+        let delta_time = ticks - last;
+        player = match handle_input(player, &sdl_context, &world_map, delta_time) {
             Ok(p) => p,
             Err(_) => break,
         };
         canvas = render(canvas, &player, &world_map);
+        last = ticks;
     }
 
     println!("Exiting");
@@ -248,9 +249,9 @@ fn render(mut canvas: WindowCanvas, player: &Player, world_map: &Vec<Vec<u8>>) -
         if draw_start < 0 {
             draw_start = 0;
         }
-        let mut drawEnd: u32 = (line_height / 2f64 + SCREEN_HEIGHT as f64 / 2f64) as u32;
-        if drawEnd >= SCREEN_HEIGHT {
-            drawEnd = SCREEN_HEIGHT - 1;
+        let mut draw_end: u32 = (line_height / 2f64 + SCREEN_HEIGHT as f64 / 2f64) as u32;
+        if draw_end >= SCREEN_HEIGHT {
+            draw_end = SCREEN_HEIGHT - 1;
         }
 
         let mut map_value: u8 = world_map[map_x as usize][map_y as usize];
@@ -267,10 +268,12 @@ fn render(mut canvas: WindowCanvas, player: &Player, world_map: &Vec<Vec<u8>>) -
             _ => canvas.set_draw_color(Color::RGB(0, 0, 0)),
         }
 
-        canvas.draw_line(
-            Point::new(x as i32, drawEnd as i32),
-            Point::new(x as i32, draw_start),
-        );
+        canvas
+            .draw_line(
+                Point::new(x as i32, draw_end as i32),
+                Point::new(x as i32, draw_start),
+            )
+            .expect("Drawing line went wrong");
     }
     canvas.present();
     canvas.clear();
@@ -281,7 +284,7 @@ fn handle_input(
     mut player: Player,
     sdl_context: &sdl2::Sdl,
     world_map: &Vec<Vec<u8>>,
-    delta_time: u64,
+    delta_time: u32,
 ) -> Result<Player, bool> {
     let mut event_pump = sdl_context.event_pump().unwrap();
     let mut exit = false;
@@ -316,30 +319,31 @@ fn handle_input(
     if exit {
         return Err(true);
     }
-
-    for _ in 0..delta_time {
+    for _i in 0..delta_time {
         if player.up {
+            println!(
+                "{}",
+                (player.position.x + player.direction.x * player.move_speed)
+            );
             if world_map[(player.position.x + player.direction.x * player.move_speed) as usize]
                 [(player.position.y) as usize]
                 == 0
             {
-                player.position.x = player.position.x
-                    + player.direction.x * player.move_speed * (delta_time as f64);
+                player.position.x = player.position.x + player.direction.x * player.move_speed;
             }
             if world_map[(player.position.x) as usize]
                 [(player.position.y + player.direction.y * player.move_speed) as usize]
                 == 0
             {
-                player.position.y = player.position.y
-                    + player.direction.y * player.move_speed * (delta_time as f64);
+                player.position.y = player.position.y + player.direction.y * player.move_speed;
             }
         }
 
         if player.right == true {
-            player = turn(player, TurnDirection::RIGHT);
+            player = turn(player, TurnDirection::RIGHT, delta_time);
         }
         if player.left {
-            player = turn(player, TurnDirection::LEFT);
+            player = turn(player, TurnDirection::LEFT, delta_time);
         }
     }
     Ok(player)
@@ -350,16 +354,19 @@ enum TurnDirection {
     RIGHT,
 }
 
-fn turn(mut player: Player, dir: TurnDirection) -> Player {
+fn turn(mut player: Player, dir: TurnDirection, delta_time: u32) -> Player {
     let rotation = match dir {
         TurnDirection::RIGHT => -player.rot_speed,
         TurnDirection::LEFT => player.rot_speed,
     };
-    let old_dir_x = player.direction.x;
-    let old_plane_x = player.plane.x;
-    player.direction.x = player.direction.x * rotation.cos() - player.direction.y * rotation.sin();
-    player.direction.y = old_dir_x * rotation.sin() + player.direction.y * rotation.cos();
-    player.plane.x = player.plane.x * rotation.cos() - player.plane.y * rotation.sin();
-    player.plane.y = old_plane_x * rotation.sin() + player.plane.y * rotation.cos();
+    for _i in 0..delta_time {
+        let old_dir_x = player.direction.x;
+        let old_plane_x = player.plane.x;
+        player.direction.x =
+            player.direction.x * rotation.cos() - player.direction.y * rotation.sin();
+        player.direction.y = old_dir_x * rotation.sin() + player.direction.y * rotation.cos();
+        player.plane.x = player.plane.x * rotation.cos() - player.plane.y * rotation.sin();
+        player.plane.y = old_plane_x * rotation.sin() + player.plane.y * rotation.cos();
+    }
     player
 }
