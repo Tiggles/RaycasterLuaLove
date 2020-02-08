@@ -34,8 +34,8 @@ fn main() {
     let window = video_subsystem
         .window("Raycaster", SCREEN_WIDTH as u32, SCREEN_HEIGHT as u32)
         .position_centered()
-        .resizable()
         .allow_highdpi()
+        .resizable()
         .build()
         .unwrap();
 
@@ -150,34 +150,139 @@ fn main() {
     loop {
         let delta_time = 0;
         let last = 0;
-        player = match handle_input(player, &sdl_context) {
+        player = match handle_input(player, &sdl_context, &world_map, 1) {
             Ok(p) => p,
             Err(_) => break,
         };
-        canvas = render(canvas);
+        canvas = render(canvas, &player, &world_map);
     }
 
     println!("Exiting");
 }
 
-fn render(mut canvas: WindowCanvas) -> WindowCanvas {
+fn render(mut canvas: WindowCanvas, player: &Player, world_map: &Vec<Vec<u8>>) -> WindowCanvas {
     use sdl2::rect::Point;
-    let mut iteration: u8 = 0;
-    for i in 0..SCREEN_WIDTH {
-        iteration = (iteration + 1) % 255;
-        canvas.set_draw_color(Color::RGB(iteration as u8, 64, 255 - iteration));
-        canvas
-            .draw_line(
-                Point::new(i as i32, 0),
-                Point::new(i as i32, SCREEN_HEIGHT as i32),
-            )
-            .expect("Something went wrong drawing vertical lines");
+    use sdl2::rect::Rect;
+    canvas.set_draw_color(Color::RGB(102, 103, 123));
+    canvas
+        .fill_rect(Rect::new(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT / 2))
+        .expect("An error occurred for toprect");
+    canvas.set_draw_color(Color::RGB(255, 255, 255));
+    canvas
+        .fill_rect(Rect::new(
+            0,
+            (SCREEN_HEIGHT / 2) as i32,
+            SCREEN_WIDTH,
+            SCREEN_HEIGHT / 2,
+        ))
+        .expect("And error ocurred for bottom rect");
+    for x in 0..SCREEN_WIDTH {
+        let camera_x = 2.0f64 * (x as f64) / (SCREEN_WIDTH - 1) as f64;
+        let ray_pos_x = player.position.x;
+        let ray_pos_y = player.position.y;
+        let ray_direction = Vector2D {
+            x: player.direction.x + player.plane.x * camera_x,
+            y: player.direction.y + player.plane.y * camera_x,
+        };
+
+        let mut map_x = ray_pos_x.floor();
+        let mut map_y = ray_pos_y.floor();
+
+        let delta_dist_x = (1.0f64
+            + (ray_direction.y * ray_direction.y) / (ray_direction.x * ray_direction.x))
+            .sqrt();
+        let delta_dist_y = (1.0f64
+            + (ray_direction.x * ray_direction.x) / (ray_direction.y * ray_direction.y))
+            .sqrt();
+
+        let mut hit = false;
+
+        let step_x;
+        let step_y;
+        let mut side_dist_x;
+        let mut side_dist_y;
+
+        if ray_direction.x < 0f64 {
+            step_x = -1f64;
+            side_dist_x = (ray_pos_x - map_x) * delta_dist_x;
+        } else {
+            step_x = 1f64;
+            side_dist_x = (map_x + 1.0f64 - ray_pos_x) * delta_dist_x;
+        }
+
+        if ray_direction.y < 0f64 {
+            step_y = -1f64;
+            side_dist_y = (ray_pos_y - map_y) * delta_dist_y;
+        } else {
+            step_y = 1f64;
+            side_dist_y = (map_y + 1f64 - ray_pos_y) * delta_dist_y;
+        }
+
+        let mut side = -1;
+        let perp_wall_distance;
+
+        while !hit {
+            if side_dist_x < side_dist_y {
+                side_dist_x = side_dist_x + delta_dist_x;
+                map_x = map_x + step_x;
+                side = 0;
+            } else {
+                side_dist_y = side_dist_y + delta_dist_y;
+                map_y = map_y + step_y;
+                side = 1;
+            }
+            if world_map[map_x as usize][map_y as usize] > 0 {
+                hit = true;
+            }
+        }
+
+        if side == 0 {
+            perp_wall_distance = (map_x - ray_pos_x + (1f64 - step_x) / 2f64) / ray_direction.x;
+        } else {
+            perp_wall_distance = (map_y - ray_pos_y + (1f64 - step_y) / 2f64) / ray_direction.y;
+        }
+
+        let line_height = (SCREEN_HEIGHT as f64 / perp_wall_distance).floor();
+
+        let mut draw_start: i32 = (-line_height / 2f64 + (SCREEN_HEIGHT as f64 / 2f64)) as i32;
+        if draw_start < 0 {
+            draw_start = 0;
+        }
+        let mut drawEnd: u32 = (line_height / 2f64 + SCREEN_HEIGHT as f64 / 2f64) as u32;
+        if drawEnd >= SCREEN_HEIGHT {
+            drawEnd = SCREEN_HEIGHT - 1;
+        }
+
+        let mut map_value: u8 = world_map[map_x as usize][map_y as usize];
+
+        if side == 1 {
+            map_value = (map_value as f64 / 2f64) as u8;
+        }
+
+        match map_value {
+            0 => canvas.set_draw_color(Color::RGB(255, 255, 0)),
+            1 => canvas.set_draw_color(Color::RGB(255, 0, 0)),
+            2 => canvas.set_draw_color(Color::RGB(0, 255, 0)),
+            3 => canvas.set_draw_color(Color::RGB(0, 0, 255)),
+            _ => canvas.set_draw_color(Color::RGB(0, 0, 0)),
+        }
+
+        canvas.draw_line(
+            Point::new(x as i32, drawEnd as i32),
+            Point::new(x as i32, draw_start),
+        );
     }
     canvas.present();
+    canvas.clear();
     canvas
 }
 
-fn handle_input(mut player: Player, sdl_context: &sdl2::Sdl) -> Result<Player, bool> {
+fn handle_input(
+    mut player: Player,
+    sdl_context: &sdl2::Sdl,
+    world_map: &Vec<Vec<u8>>,
+    delta_time: u64,
+) -> Result<Player, bool> {
     let mut event_pump = sdl_context.event_pump().unwrap();
     let mut exit = false;
     for event in event_pump.poll_iter() {
@@ -208,13 +313,53 @@ fn handle_input(mut player: Player, sdl_context: &sdl2::Sdl) -> Result<Player, b
             _ => {}
         }
     }
-    println!("{}", player.up);
-    println!("{}", player.down);
-    println!("{}", player.left);
-    println!("{}", player.right);
     if exit {
-        Err(true)
-    } else {
-        Ok(player)
+        return Err(true);
     }
+
+    for _ in 0..delta_time {
+        if player.up {
+            if world_map[(player.position.x + player.direction.x * player.move_speed) as usize]
+                [(player.position.y) as usize]
+                == 0
+            {
+                player.position.x = player.position.x
+                    + player.direction.x * player.move_speed * (delta_time as f64);
+            }
+            if world_map[(player.position.x) as usize]
+                [(player.position.y + player.direction.y * player.move_speed) as usize]
+                == 0
+            {
+                player.position.y = player.position.y
+                    + player.direction.y * player.move_speed * (delta_time as f64);
+            }
+        }
+
+        if player.right == true {
+            player = turn(player, TurnDirection::RIGHT);
+        }
+        if player.left {
+            player = turn(player, TurnDirection::LEFT);
+        }
+    }
+    Ok(player)
+}
+
+enum TurnDirection {
+    LEFT,
+    RIGHT,
+}
+
+fn turn(mut player: Player, dir: TurnDirection) -> Player {
+    let rotation = match dir {
+        TurnDirection::RIGHT => -player.rot_speed,
+        TurnDirection::LEFT => player.rot_speed,
+    };
+    let old_dir_x = player.direction.x;
+    let old_plane_x = player.plane.x;
+    player.direction.x = player.direction.x * rotation.cos() - player.direction.y * rotation.sin();
+    player.direction.y = old_dir_x * rotation.sin() + player.direction.y * rotation.cos();
+    player.plane.x = player.plane.x * rotation.cos() - player.plane.y * rotation.sin();
+    player.plane.y = old_plane_x * rotation.sin() + player.plane.y * rotation.cos();
+    player
 }
